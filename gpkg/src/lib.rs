@@ -251,7 +251,7 @@ impl GeoPackage {
     pub fn get_layer_srs_id(&self, layer_name: &str) -> Result<Option<i64>> {
         let mut stmt = self
             .conn
-            .prepare("SELECT FROM gpkg_contents WHERE table_name = ?1")?;
+            .prepare("SELECT srs_id FROM gpkg_contents WHERE table_name = ?1")?;
         let temp: Option<i64> = stmt.query_row(params![layer_name], |r| r.get(0).optional())?;
         Ok(temp)
     }
@@ -262,11 +262,11 @@ impl GeoPackage {
     pub fn update_layer_srs_id(&mut self, layer_name: &str, srs_id: i64) -> Result<()> {
         let tx = self.conn.transaction()?;
         tx.execute(
-            "UPDATE gpkg_contents SET srs_id = ?1 WHERE layer_name = ?2",
+            "UPDATE gpkg_contents SET srs_id = ?1 WHERE table_name = ?2",
             params![srs_id, layer_name],
         )?;
         tx.execute(
-            "UPDATE gpkg_geometry_columns SET srs_id = ?1 WHERE layer_name = ?2",
+            "UPDATE gpkg_geometry_columns SET srs_id = ?1 WHERE table_name = ?2",
             params![srs_id, layer_name],
         )?;
         tx.commit()?;
