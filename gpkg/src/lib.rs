@@ -275,9 +275,13 @@ impl GeoPackage {
 
     /// Close the geopackage
     /// # Examples
-    /// ```ignore
+    /// ```
     /// # use std::path::Path;
-    /// let path = Path::new("./test.gpkg");
+    /// # use gpkg::GeoPackage;
+    /// # use std::fs;
+    /// # fs::create_dir_all("./test_data").ok();
+    /// let path = Path::new("./test_data/test.gpkg");
+    /// # if path.exists() { fs::remove_file(path).ok(); }
     /// let gp = GeoPackage::create(path).unwrap();
     /// // do some things with the GeoPackage
     /// gp.close();
@@ -491,6 +495,10 @@ mod tests {
         }
 
         let filename = Path::new("./test_data/multipoint.gpkg");
+        fs::create_dir_all("./test_data").unwrap();
+        if filename.exists() {
+            fs::remove_file(filename).unwrap();
+        }
         let gp = GeoPackage::create(&filename).unwrap();
 
         gp.create_layer::<MPTest>().unwrap();
@@ -535,6 +543,10 @@ mod tests {
         }
 
         let filename = Path::new("./test_data/multilinestring.gpkg");
+        fs::create_dir_all("./test_data").unwrap();
+        if filename.exists() {
+            fs::remove_file(filename).unwrap();
+        }
         let gp = GeoPackage::create(&filename).unwrap();
 
         gp.create_layer::<MPTest>().unwrap();
@@ -590,6 +602,10 @@ mod tests {
         }
 
         let filename = Path::new("./test_data/multipolygon.gpkg");
+        fs::create_dir_all("./test_data").unwrap();
+        if filename.exists() {
+            fs::remove_file(filename).unwrap();
+        }
         let gp = GeoPackage::create(&filename).unwrap();
 
         gp.create_layer::<MPTest>().unwrap();
