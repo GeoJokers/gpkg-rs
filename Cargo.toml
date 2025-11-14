@@ -1,6 +1,7 @@
 # this is broken up as a workspace because proc macros have
 # to be at the root level of the crate
 [workspace]
+resolver = "3"
 members = [
     "gpkg",
     "gpkg-derive",
