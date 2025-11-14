@@ -15,7 +15,7 @@ pub use gpkg_derive::GPKGModel;
 pub use gpkg_wkb::GeoPackageWKB;
 #[doc(inline)]
 pub use result::{Error, Result};
-use rusqlite::{params, Connection, DatabaseName, OpenFlags, OptionalExtension};
+use rusqlite::{params, Connection, OpenFlags, OptionalExtension};
 #[doc(inline)]
 pub use srs::SpatialRefSys;
 use std::path::Path;
@@ -94,9 +94,11 @@ impl GeoPackage {
         let conn = Connection::open(path)?;
         let gpkg = GeoPackage { conn };
         gpkg.conn
-            .pragma_update(Some(DatabaseName::Main), "application_id", 0x47504B47)?;
+            .pragma_update(None, "foreign_keys", "ON")?;
         gpkg.conn
-            .pragma_update(Some(DatabaseName::Main), "user_version", 10300)?;
+            .pragma_update(Some("main"), "application_id", 0x47504B47)?;
+        gpkg.conn
+            .pragma_update(Some("main"), "user_version", 10300)?;
         // requrement 10
         gpkg.conn.execute(CREATE_SPATIAL_REF_SYS_TABLE, [])?;
         // insert the default SRS as per spec requirement 11
@@ -287,6 +289,7 @@ impl GeoPackage {
     /// Open a geopackage, doing validation of the GeoPackage internals to ensure that operation will work correctly.
     pub fn open<P: AsRef<Path>>(path: P) -> Result<GeoPackage> {
         let conn = Connection::open_with_flags(path, OpenFlags::SQLITE_OPEN_READ_WRITE)?;
+        conn.pragma_update(None, "foreign_keys", "ON")?;
         // check the user application_id and user_version as per requirement 2
         let application_id: u32 =
             conn.query_row("SELECT * FROM pragma_application_id()", [], |row| {

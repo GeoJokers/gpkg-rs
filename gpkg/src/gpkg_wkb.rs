@@ -179,7 +179,7 @@ trait WKBBytesRaw: Sized {
     fn read_from_bytes<T: ByteOrder, U: Read>(r: &mut U) -> Result<Self>;
 }
 
-impl WKBBytesRaw for geo_types::Coordinate<f64> {
+impl WKBBytesRaw for geo_types::Coord<f64> {
     fn write_as_bytes(&self, w: &mut impl Write) -> Result<()> {
         w.write_all(&self.x.to_le_bytes())?;
         w.write_all(&self.y.to_le_bytes())?;
@@ -217,7 +217,7 @@ impl WKBBytesRaw for geo_types::LineString<f64> {
         let num_points = r.read_u32::<T>()?;
         let mut out_vec = Vec::with_capacity(num_points as usize);
         for _ in 0..num_points {
-            out_vec.push(geo_types::Coordinate::<f64>::read_from_bytes::<T, _>(r)?);
+            out_vec.push(geo_types::Coord::<f64>::read_from_bytes::<T, _>(r)?);
         }
         Ok(geo_types::LineString::new(out_vec))
     }
@@ -531,7 +531,7 @@ mod tests {
     use super::*;
     use byteorder::{BigEndian, LittleEndian};
     use geo_types::{
-        coord, Coordinate, Geometry, GeometryCollection, LineString, MultiLineString, MultiPoint,
+        coord, Coord, Geometry, GeometryCollection, LineString, MultiLineString, MultiPoint,
         MultiPolygon, Point, Polygon,
     };
 
@@ -540,7 +540,7 @@ mod tests {
             && (p1.y().to_ne_bytes() == p2.y().to_ne_bytes());
     }
 
-    fn coords_equal(p1: &Coordinate<f64>, p2: &Coordinate<f64>) -> bool {
+    fn coords_equal(p1: &Coord<f64>, p2: &Coord<f64>) -> bool {
         return (p1.x.to_ne_bytes() == p2.x.to_ne_bytes())
             && (p1.y.to_ne_bytes() == p2.y.to_ne_bytes());
     }

@@ -111,7 +111,7 @@ fn derive_gpkg_inner(input: proc_macro2::TokenStream) -> proc_macro2::TokenStrea
     let tbl_name_meta = get_meta_attr(&ast.attrs, "layer_name");
     let tbl_name = tbl_name_meta.and_then(|meta| match meta {
         Meta::NameValue(MetaNameValue {
-            lit: Lit::Str(ls), ..
+            value: syn::Expr::Lit(syn::ExprLit { lit: Lit::Str(ls), .. }), ..
         }) => Some(ls.value()),
         _ => None,
     });
@@ -134,7 +134,7 @@ fn derive_gpkg_inner(input: proc_macro2::TokenStream) -> proc_macro2::TokenStrea
 fn get_meta_attr<'a>(attrs: &Vec<Attribute>, name: &'a str) -> Option<Meta> {
     let mut temp = attrs
         .iter()
-        .filter_map(|attr| attr.parse_meta().ok())
+        .map(|attr| attr.meta.clone())
         .filter(|i| match i.path().get_ident() {
             Some(i) => i.to_string() == name.to_owned(),
             None => false,
@@ -388,8 +388,8 @@ fn impl_model(
                         fid INTEGER PRIMARY KEY,
                         #(#column_defs ),*
                     );
-                    #geom_column_ts
                     #contents_ts
+                    #geom_column_ts
                     COMMIT;
                 )
             }
@@ -437,14 +437,16 @@ fn impl_model(
 
 fn get_geom_field_info(field: &Field) -> Option<GeomInfo> {
     for attr in &field.attrs {
-        if let Some(ident) = attr.path.get_ident() {
+        if let Some(ident) = attr.path().get_ident() {
             if ident.to_string() == "geom_field" {
                 let geom_type_name =
                     get_meta_attr(&field.attrs, "geom_field").and_then(|meta| match meta {
-                        Meta::List(l) => l.nested.first().and_then(|n| match n {
-                            syn::NestedMeta::Lit(Lit::Str(ls)) => Some(ls.value()),
-                            _ => panic!("You must specify a geometry type when using the geom_field attribute"),
-                        }),
+                        Meta::List(l) => {
+                            l.parse_args::<Lit>().ok().and_then(|lit| match lit {
+                                Lit::Str(ls) => Some(ls.value()),
+                                _ => panic!("You must specify a geometry type when using the geom_field attribute"),
+                            })
+                        },
                         _ => panic!("You must specify a geometry type when using the geom_field attribute"),
                     });
                 if let Some(name) = geom_type_name {

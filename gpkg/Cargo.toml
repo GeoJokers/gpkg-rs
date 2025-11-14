@@ -1,7 +1,7 @@
 [package]
 name = "gpkg"
 version = "0.3.0"
-edition = "2021"
+edition = "2024"
 homepage = "https://github.com/cjriley9/gpkg-rs"
 repository = "https://github.com/cjriley9/gpkg-rs"
 license = "MIT OR Apache-2.0"
@@ -10,11 +10,11 @@ description = "Rust library for working with GeoPackages"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rusqlite = "0.27.0"
+rusqlite = { version = "0.37.0", features = ["bundled"] }
 geo-types = "0.7.4"
 gpkg-derive = { version = "0.3.0", path = "../gpkg-derive" }
-wkb = "0.7.1"
-thiserror = "1.0.31"
+wkb = "0.9.1"
+thiserror = "2.0.17"
 byteorder = "1.4.3"
 
 [dev-dependencies]
