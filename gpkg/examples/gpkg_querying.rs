@@ -14,6 +14,19 @@ fn main() {
         }
     };
 
+    // Query and print the SRS IDs of the GeoPackage
+    match gpkg.get_srs_ids() {
+        Ok(list) => {
+            for srs_id in &list {
+                println!("SRS ID: {}", srs_id);
+            }
+        }
+        Err(e) => {
+            eprintln!("Error querying SRS list: {}", e);
+            return;
+        }
+    };
+
     // Query and print the SRS ID of the point_layer
     match gpkg.get_layer_srs_id("point_layer") {
         Ok(Some(srs_id)) => println!("SRS ID of point_layer: {}", srs_id),

@@ -262,6 +262,20 @@ impl GeoPackage {
         Ok(())
     }
 
+    /// Get all spatial reference system IDs in the GeoPackage.
+    pub fn get_srs_ids(&self) -> Result<Vec<i64>> {
+        let mut stmt = self
+            .conn
+            .prepare("SELECT srs_id FROM gpkg_spatial_ref_sys")?;
+        let srs_iter = stmt.query_map([], |row| row.get(0))?;
+
+        let mut srs_ids = Vec::new();
+        for srs_id in srs_iter {
+            srs_ids.push(srs_id?);
+        }
+        Ok(srs_ids)
+    }
+
     /// Retrieve the srs_id for a layer
     pub fn get_layer_srs_id(&self, layer_name: &str) -> Result<Option<i64>> {
         let mut stmt = self
