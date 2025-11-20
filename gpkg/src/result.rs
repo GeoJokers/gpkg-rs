@@ -17,4 +17,6 @@ pub enum Error {
     CreateExistingError,
     #[error("GeoPackage failed validation check when opening")]
     ValidationError,
+    #[error("A spatial reference system with ID {0} already exists")]
+    DuplicateSrsError(i64),
 }

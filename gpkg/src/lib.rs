@@ -232,6 +232,21 @@ impl GeoPackage {
 
     /// Add a new spatial reference system to the geopackage
     pub fn new_srs(&self, srs: &SpatialRefSys) -> Result<()> {
+        // Check if SRS with this ID already exists
+        let exists: bool = self
+            .conn
+            .query_row(
+                "SELECT COUNT(*) FROM gpkg_spatial_ref_sys WHERE srs_id = ?1",
+                params![srs.id],
+                |row| row.get::<_, i64>(0),
+            )
+            .map(|count| count > 0)?;
+
+        if exists {
+            return Err(Error::DuplicateSrsError(srs.id));
+        }
+
+        // Insert the new SRS
         const STMT: &str = "INSERT INTO gpkg_spatial_ref_sys VALUES (?1, ?2, ?3, ?4, ?5, ?6)";
         self.conn.execute(
             STMT,
