@@ -136,6 +136,19 @@ impl GeoPackage {
         Ok(())
     }
 
+    pub fn get_layer_names(&self) -> Result<Vec<String>> {
+        let mut stmt = self
+            .conn
+            .prepare("SELECT table_name FROM gpkg_contents")?;
+        let layer_iter = stmt.query_map([], |row| row.get(0))?;
+
+        let mut layer_names = Vec::new();
+        for layer_name in layer_iter {
+            layer_names.push(layer_name?);
+        }
+        Ok(layer_names)
+    }
+
     pub fn insert_record<'a, T: GPKGModel<'a>>(&self, record: &T) -> Result<()> {
         let sql = T::get_insert_sql();
         self.conn.execute(sql, record.as_params().as_slice())?;
