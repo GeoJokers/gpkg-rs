@@ -1,6 +1,6 @@
 [package]
 name = "gpkg"
-version = "0.3.1"
+version = "0.3.2"
 edition = "2024"
 homepage = "https://github.com/cjriley9/gpkg-rs"
 repository = "https://github.com/cjriley9/gpkg-rs"
@@ -12,7 +12,7 @@ description = "Rust library for working with GeoPackages"
 [dependencies]
 rusqlite = { version = "0.41.1", features = ["bundled"] }
 geo-types = "0.7.20"
-gpkg-derive = { version = "0.3.1", path = "../gpkg-derive" }
+gpkg-derive = { version = "0.3.2", path = "../gpkg-derive" }
 wkb = "0.9.3"
 thiserror = "2.0.21"
 byteorder = "1.5.0"
