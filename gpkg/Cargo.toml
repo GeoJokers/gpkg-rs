@@ -10,12 +10,12 @@ description = "Rust library for working with GeoPackages"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rusqlite = { version = "0.40.2", features = ["bundled"] }
-geo-types = "0.7.4"
+rusqlite = { version = "0.41.1", features = ["bundled"] }
+geo-types = "0.7.20"
 gpkg-derive = { version = "0.3.1", path = "../gpkg-derive" }
-wkb = "0.9.1"
-thiserror = "2.0.17"
-byteorder = "1.4.3"
+wkb = "0.9.3"
+thiserror = "2.0.21"
+byteorder = "1.5.0"
 
 [dev-dependencies]
-tempfile = "3.3.0"
+tempfile = "3.27.0"

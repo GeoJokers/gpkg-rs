@@ -10,10 +10,10 @@ description = "Internal crate used for derive macros in gpkg crate"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-syn = {version = "3.0.4", features = ["parsing", "extra-traits"]}
-quote = "1.0" 
-proc-macro2 = "1.0"
-lazy_static = "1.4.0"
+syn = {version = "3.0.9", features = ["parsing", "extra-traits"]}
+quote = "1.0.47" 
+proc-macro2 = "1.0.107"
+lazy_static = "1.5.1"
 
 [lib]
 proc-macro = true
